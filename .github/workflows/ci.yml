@@ -1,0 +1,36 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e ".[dev]" && pytest -q
+      - name: Alert rule tests
+        run: |
+          docker run --rm --entrypoint promtool -v "$PWD/monitoring:/m" -w /m prom/prometheus:v2.55.1 check rules slo.yml
+          docker run --rm --entrypoint promtool -v "$PWD/monitoring:/m" -w /m prom/prometheus:v2.55.1 test rules slo.test.yml
+  terraform:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: terraform}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check
+      - run: terraform init -backend=false
+      - run: terraform validate
+  kind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: helm/kind-action@v1
+        with: {cluster_name: mlplat}
+      - run: ./scripts/kind-test.sh

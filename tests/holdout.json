@@ -1,0 +1,12 @@
+[
+  {"features": {"amount_k": 0.02, "country_mismatch": 0, "new_device": 0, "velocity_1h": 0}, "fraud": 0},
+  {"features": {"amount_k": 0.10, "country_mismatch": 0, "new_device": 1, "velocity_1h": 1}, "fraud": 0},
+  {"features": {"amount_k": 0.05, "country_mismatch": 0, "new_device": 0, "velocity_1h": 2}, "fraud": 0},
+  {"features": {"amount_k": 0.30, "country_mismatch": 0, "new_device": 0, "velocity_1h": 0}, "fraud": 0},
+  {"features": {"amount_k": 0.01, "country_mismatch": 1, "new_device": 0, "velocity_1h": 0}, "fraud": 0},
+  {"features": {"amount_k": 1.50, "country_mismatch": 1, "new_device": 1, "velocity_1h": 3}, "fraud": 1},
+  {"features": {"amount_k": 0.80, "country_mismatch": 1, "new_device": 1, "velocity_1h": 2}, "fraud": 1},
+  {"features": {"amount_k": 2.00, "country_mismatch": 1, "new_device": 0, "velocity_1h": 4}, "fraud": 1},
+  {"features": {"amount_k": 0.60, "country_mismatch": 1, "new_device": 1, "velocity_1h": 1}, "fraud": 1},
+  {"features": {"amount_k": 1.20, "country_mismatch": 0, "new_device": 1, "velocity_1h": 5}, "fraud": 1}
+]

@@ -1,0 +1,40 @@
+# Availability SLO 99.9% on /score: error budget 0.1%. Page on fast burn, ticket on slow burn.
+groups:
+  - name: mlplat-slo
+    rules:
+      - record: mlplat:error_ratio:rate5m
+        expr: sum(rate(mlplat_requests_total{code=~"5.."}[5m])) / sum(rate(mlplat_requests_total[5m]))
+      - record: mlplat:error_ratio:rate1h
+        expr: sum(rate(mlplat_requests_total{code=~"5.."}[1h])) / sum(rate(mlplat_requests_total[1h]))
+      - record: mlplat:error_ratio:rate6h
+        expr: sum(rate(mlplat_requests_total{code=~"5.."}[6h])) / sum(rate(mlplat_requests_total[6h]))
+      - record: mlplat:error_ratio:rate30m
+        expr: sum(rate(mlplat_requests_total{code=~"5.."}[30m])) / sum(rate(mlplat_requests_total[30m]))
+      - alert: ScoreErrorBudgetFastBurn
+        expr: mlplat:error_ratio:rate5m > (14.4 * 0.001) and mlplat:error_ratio:rate1h > (14.4 * 0.001)
+        for: 2m
+        labels: {severity: page}
+        annotations:
+          summary: errors are burning the 30 day budget about 14 times too fast
+          runbook: docs/RUNBOOK.md#errors-or-latency-on-score
+      - alert: ScoreErrorBudgetSlowBurn
+        expr: mlplat:error_ratio:rate30m > (6 * 0.001) and mlplat:error_ratio:rate6h > (6 * 0.001)
+        for: 15m
+        labels: {severity: ticket}
+        annotations:
+          summary: errors are burning the 30 day budget 6 times too fast
+          runbook: docs/RUNBOOK.md#errors-or-latency-on-score
+      - alert: ScoreLatencyP99High
+        expr: histogram_quantile(0.99, sum by (le) (rate(mlplat_request_duration_seconds_bucket[5m]))) > 0.25
+        for: 10m
+        labels: {severity: ticket}
+        annotations:
+          summary: p99 latency on /score is above 250 ms
+          runbook: docs/RUNBOOK.md#errors-or-latency-on-score
+      - alert: ModelReloadFailing
+        expr: max(mlplat_reload_failed) == 1
+        for: 5m
+        labels: {severity: ticket}
+        annotations:
+          summary: a new registry file does not load; pods are serving the previous model
+          runbook: docs/RUNBOOK.md#a-model-will-not-load

@@ -1,0 +1,8 @@
+{
+  "active": "v2",
+  "previous": "v1",
+  "models": {
+    "v1": {"bias": -3.0, "threshold": 0.5, "weights": {"amount_k": 0.9, "country_mismatch": 1.2, "new_device": 0.8, "velocity_1h": 0.3}},
+    "v2": {"bias": -3.2, "threshold": 0.5, "weights": {"amount_k": 0.8, "country_mismatch": 1.6, "new_device": 1.1, "velocity_1h": 0.5}}
+  }
+}

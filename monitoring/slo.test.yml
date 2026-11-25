@@ -1,0 +1,39 @@
+rule_files: [slo.yml]
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'mlplat_requests_total{code="200"}'
+        values: '0+980x120'
+      - series: 'mlplat_requests_total{code="500"}'
+        values: '0+20x120'
+    alert_rule_test:
+      - eval_time: 90m
+        alertname: ScoreErrorBudgetFastBurn
+        exp_alerts:
+          - exp_labels: {severity: page}
+            exp_annotations:
+              summary: errors are burning the 30 day budget about 14 times too fast
+              runbook: docs/RUNBOOK.md#errors-or-latency-on-score
+  - interval: 1m
+    input_series:
+      - series: 'mlplat_requests_total{code="200"}'
+        values: '0+1000x120'
+      - series: 'mlplat_requests_total{code="500"}'
+        values: '0+0x120'
+    alert_rule_test:
+      - {eval_time: 90m, alertname: ScoreErrorBudgetFastBurn, exp_alerts: []}
+      - {eval_time: 90m, alertname: ScoreErrorBudgetSlowBurn, exp_alerts: []}
+  - interval: 1m
+    input_series:
+      - series: 'mlplat_reload_failed{pod="a"}'
+        values: '0 0 1 1 1 1 1 1 1 1'
+    alert_rule_test:
+      - {eval_time: 4m, alertname: ModelReloadFailing, exp_alerts: []}
+      - eval_time: 9m
+        alertname: ModelReloadFailing
+        exp_alerts:
+          - exp_labels: {severity: ticket}
+            exp_annotations:
+              summary: a new registry file does not load; pods are serving the previous model
+              runbook: docs/RUNBOOK.md#a-model-will-not-load
