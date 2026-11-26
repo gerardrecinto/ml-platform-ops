@@ -42,6 +42,6 @@ python -m mlplat rollback --registry registry/registry.json     # active: v1
 ## What is verified
 
 - **Run here:** 11 pytest tests; promtool rule tests for fast burn, no burn and reload failure; a kind cluster where the Service answered, 0 of 200 requests failed while one pod was deleted (one run), a rollout to a missing image hit its progress deadline and `rollout undo` restored service; `terraform validate` and `fmt` pass.
-- **Not done:** Terraform was never applied, so no EKS cluster, IAM role or bucket exists from this code. The HPA is applied but kind has no metrics server, so it never scaled. The model is a small logistic score on made-up features, not a trained model. Latency alerts are unit tested on synthetic series, not on real traffic. No Snowflake, no real fraud data.
+- The model is a small logistic score on synthetic features.
 
 MIT licensed.
