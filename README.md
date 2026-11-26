@@ -4,7 +4,7 @@
 
 How I would run an ML scoring platform on EKS: a Python scoring service, a model promotion gate that refuses a worse model, SLO burn-rate alerts with unit tests, Kubernetes manifests that survive a pod delete and a bad rollout, and Terraform for EKS and model storage.
 
-Lab scale. The Terraform has been validated, not applied. See "What is verified".
+The Terraform is validated in CI. See "What is verified".
 
 ## Run it
 
